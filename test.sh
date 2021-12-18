@@ -45,7 +45,7 @@ echo '        Test' $count ">> Invalid number of arguments"
 echo '================================================================'
 ./pipex infile "cat -e" "grep $" "wc -l" "output/outfile${count}"
 echo
-if [ ! -f "output/valgrind${count}" ]; then
+if [ ! -f "output/outfile${count}" ]; then
     echo "$(tput setaf 2)check [OK]$(tput sgr 0)"
 else
 	echo "$(tput setaf 1)check [KO]$(tput sgr 0)"
