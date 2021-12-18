@@ -1,6 +1,8 @@
 NAME := test.sh
 
 all:
+	$(MAKE) -C ../ all
+	cp ../pipex .
 	./$(NAME)
 
 clean:
