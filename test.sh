@@ -1,14 +1,13 @@
 #!/bin/bash
 $(count=0)
-$(ls -la > infile)
 $(rm -rf output)
 $(mkdir output)
+$(ls -la > infile)
 
 count=$((count+1))
 echo '================================================================'
 echo '        Test' $count ">> Invalid number of arguments"
 echo '================================================================'
-echo "argc = 2"
 ./pipex infile
 valgrind --leak-check=full --log-file="output/test${count}" ./pipex infile >/dev/null 2>&1
 < output/test${count} grep "still reachable"
@@ -25,7 +24,6 @@ count=$((count+1))
 echo '================================================================'
 echo '        Test' $count ">> Invalid number of arguments"
 echo '================================================================'
-echo "argc = 5"
 ./pipex infile "cat" "grep $" "wc -l" "output/outfile${count}"
 valgrind --leak-check=full --log-file="output/test${count}" ./pipex infile "cat" "grep $" "wc -l" output/outfile >/dev/null 2>&1
 < output/test${count} grep "still reachable"
@@ -155,9 +153,9 @@ count=$((count+1))
 echo '================================================================'
 echo '                Test' $count ">> Valid commands"
 echo '================================================================'
-./pipex infile "grep .c" "wc -l" "output/outfile${count}"
+./pipex infile "grep d" "cat -e" "output/outfile${count}"
 echo "exit code" $?
-< infile grep .c | wc -l > "output/out${count}"
+< infile grep d | cat -e > "output/out${count}"
 echo "exit code" $?
 diff "output/outfile${count}" "output/out${count}"
 ret=$?
@@ -234,9 +232,9 @@ count=$((count+1))
 echo '================================================================'
 echo '                Test' $count ">> Valid commands"
 echo '================================================================'
-./pipex infile "cat" "tr - ' '" "output/outfile${count}"
+./pipex infile "grep pipex" "tr x ' '" "output/outfile${count}"
 echo "exit code" $?
-<  infile cat | tr - ' ' > "output/out${count}"
+<  infile grep pipex | tr x ' ' > "output/out${count}"
 echo "exit code" $?
 diff "output/outfile${count}" "output/out${count}"
 ret=$?
