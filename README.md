@@ -7,4 +7,4 @@ cd pipex-tester
 cp ../pipex .
 ```
 
-Run the tester `./test.sh`
+Run the tester with `make`
