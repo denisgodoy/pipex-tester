@@ -82,9 +82,9 @@ echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 	echo "<" $exit
 	echo ">" $exit_orig
+    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -123,9 +123,9 @@ echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 	echo "<" $exit
 	echo ">" $exit_orig
+    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -170,9 +170,9 @@ echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 	echo "<" $exit
 	echo ">" $exit_orig
+    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -216,9 +216,9 @@ echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 	echo "<" $exit
 	echo ">" $exit_orig
+    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -256,9 +256,9 @@ echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 	echo "<" $exit
 	echo ">" $exit_orig
+    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -296,9 +296,9 @@ echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 	echo "<" $exit
 	echo ">" $exit_orig
+    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -374,9 +374,9 @@ echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 	echo "<" $exit
 	echo ">" $exit_orig
+    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -415,9 +415,9 @@ echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 	echo "<" $exit
 	echo ">" $exit_orig
+    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -455,9 +455,9 @@ echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 	echo "<" $exit
 	echo ">" $exit_orig
+    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
