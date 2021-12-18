@@ -24,7 +24,7 @@ echo '================================================================'
 echo '        Test' $count ">> Invalid number of arguments"
 echo '                    ./pipex infile'
 echo '================================================================'
-./pipex infile
+echo "<"; ./pipex infile
 valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile >/dev/null 2>&1
 echo
 if [ ! -f "output/valgrind${count}" ]; then
@@ -33,9 +33,9 @@ else
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)memcheck [OK]$(tput sgr 0)"
+    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)memcheck [KO]$(tput sgr 0)"
+    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -46,12 +46,12 @@ echo '================================================================'
 echo '        Test' $count ">> Invalid number of arguments"
 echo ' ./pipex infile "cat -e" "grep $" "wc -l" output/outfile'${count}''
 echo '================================================================'
-./pipex infile "cat -e" "grep $" "wc -l" "output/outfile${count}"
+echo "<"; ./pipex infile "cat -e" "grep $" "wc -l" "output/outfile${count}"
 echo
 if [ ! -f "output/outfile${count}" ]; then
     echo "$(tput setaf 2)check [OK]$(tput sgr 0)"
 else
-	echo "$(tput setaf 1)check [KO]$(tput sgr 0)"
+	echo "$(tput setaf 1)check [KO]$(tput sgr 0) - Compile bonus separately!"
 fi
 valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat -e" "grep $" "wc -l" output/valgrind >/dev/null 2>&1
 if [ ! -f "output/valgrind${count}" ]; then
@@ -60,9 +60,9 @@ else
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)memcheck [OK]$(tput sgr 0)"
+    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)memcheck [KO]$(tput sgr 0)"
+    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -100,9 +100,9 @@ else
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)memcheck [OK]$(tput sgr 0)"
+    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)memcheck [KO]$(tput sgr 0)"
+    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -142,9 +142,9 @@ else
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)memcheck [OK]$(tput sgr 0)"
+    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)memcheck [KO]$(tput sgr 0)"
+    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -191,9 +191,9 @@ else
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)memcheck [OK]$(tput sgr 0)"
+    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)memcheck [KO]$(tput sgr 0)"
+    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
 	fi
 fi
 if [ -f "output/valgrind" ]; then
@@ -234,9 +234,9 @@ else
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)memcheck [OK]$(tput sgr 0)"
+    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)memcheck [KO]$(tput sgr 0)"
+    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -274,9 +274,9 @@ else
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)memcheck [OK]$(tput sgr 0)"
+    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)memcheck [KO]$(tput sgr 0)"
+    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -314,9 +314,9 @@ else
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)memcheck [OK]$(tput sgr 0)"
+    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)memcheck [KO]$(tput sgr 0)"
+    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -352,9 +352,9 @@ else
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)memcheck [OK]$(tput sgr 0)"
+    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)memcheck [KO]$(tput sgr 0)"
+    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -392,9 +392,9 @@ else
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)memcheck [OK]$(tput sgr 0)"
+    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)memcheck [KO]$(tput sgr 0)"
+    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -433,9 +433,9 @@ else
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)memcheck [OK]$(tput sgr 0)"
+    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)memcheck [KO]$(tput sgr 0)"
+    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -473,9 +473,9 @@ else
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)memcheck [OK]$(tput sgr 0)"
+    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)memcheck [KO]$(tput sgr 0)"
+    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
 	fi
 fi
 echo
