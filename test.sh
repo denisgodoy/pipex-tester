@@ -7,6 +7,7 @@ $(ls -la > infile)
 count=$((count+1))
 echo '================================================================'
 echo '             Test' $count ">> Check the executable"
+echo '                Executable name is pipex'
 echo '================================================================'
 if [ ! -f "pipex" ]; then
 	echo "$(tput setaf 1)executable [KO]$(tput sgr 0)"
@@ -21,6 +22,7 @@ echo
 count=$((count+1))
 echo '================================================================'
 echo '        Test' $count ">> Invalid number of arguments"
+echo '                    ./pipex infile'
 echo '================================================================'
 ./pipex infile
 valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile >/dev/null 2>&1
@@ -42,6 +44,7 @@ echo
 count=$((count+1))
 echo '================================================================'
 echo '        Test' $count ">> Invalid number of arguments"
+echo ' ./pipex infile "cat -e" "grep $" "wc -l" output/outfile'${count}''
 echo '================================================================'
 ./pipex infile "cat -e" "grep $" "wc -l" "output/outfile${count}"
 echo
@@ -68,18 +71,20 @@ echo
 count=$((count+1))
 echo '================================================================'
 echo '                Test' $count ">> Invalid infile"
+echo '     ./pipex file1 "cat" "grep x" output/outfile'${count}''
 echo '================================================================'
-./pipex file1 "cat" "grep x" "output/outfile${count}"
+echo "<"; ./pipex file1 "cat" "grep x" "output/outfile${count}"
 exit=$?
-echo "exit code" $exit
-< file1 cat | grep x > "output/outfile${count}-orig"
+echo
+echo ">"; < file1 cat | grep x > "output/outfile${count}-orig"
 exit_orig=$?
-echo "exit code" $exit_orig
 echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
     echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+	echo "<" $exit
+	echo ">" $exit_orig
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -106,19 +111,21 @@ echo
 count=$((count+1))
 echo '================================================================'
 echo '              Test' $count ">> Infile bad permission"
+echo '       ./pipex infile "cat" "cat -e" output/outfile'${count}''
 echo '================================================================'
 chmod 000 infile
-./pipex infile "cat" "cat -e" "output/outfile${count}"
+echo "<"; ./pipex infile "cat" "cat -e" "output/outfile${count}"
 exit=$?
-echo "exit code" $exit
-< infile cat | cat -e > "output/outfile${count}-orig"
+echo
+echo ">"; < infile cat | cat -e > "output/outfile${count}-orig"
 exit_orig=$?
-echo "exit code" $exit_orig
 echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
     echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+	echo "<" $exit
+	echo ">" $exit_orig
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -146,17 +153,17 @@ echo
 count=$((count+1))
 echo '================================================================'
 echo '              Test' $count ">> Outfile bad permission"
+echo '    ./pipex infile "grep pipex" "wc -lw" output/outfile'${count}''
 echo '================================================================'
 touch "output/outfile${count}"
 chmod 000 "output/outfile${count}"
-./pipex infile "grep pipex" "wc -lw" "output/outfile${count}"
+echo "<"; ./pipex infile "grep pipex" "wc -lw" "output/outfile${count}"
 exit=$?
-echo "exit code" $exit
+echo
 touch "output/outfile${count}-orig"
 chmod 000 "output/outfile${count}-orig"
-< infile grep pipex | wc -lw > "output/outfile${count}-orig"
+echo ">"; < infile grep pipex | wc -lw > "output/outfile${count}-orig"
 exit_orig=$?
-echo "exit code" $exit_orig
 chmod 777 "output/outfile${count}"
 chmod 777 "output/outfile${count}-orig"
 echo
@@ -164,6 +171,8 @@ if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
     echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+	echo "<" $exit
+	echo ">" $exit_orig
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -196,18 +205,20 @@ echo
 count=$((count+1))
 echo '================================================================'
 echo '                Test' $count ">> Invalid command 1"
+echo '      ./pipex infile "catzado" "wc -w" output/outfile'${count}''
 echo '================================================================'
-./pipex infile "catzado" "wc -w" "output/outfile${count}"
+echo "<"; ./pipex infile "catzado" "wc -w" "output/outfile${count}"
 exit=$?
-echo "exit code" $exit
-< infile catzado | wc -w > "output/outfile${count}-orig"
+echo
+echo ">"; < infile catzado | wc -w > "output/outfile${count}-orig"
 exit_orig=$?
-echo "exit code" $exit_orig
 echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
     echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+	echo "<" $exit
+	echo ">" $exit_orig
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -234,18 +245,20 @@ echo
 count=$((count+1))
 echo '================================================================'
 echo '                Test' $count ">> Invalid command 2"
+echo '   ./pipex infile "cat" "trzero a b" output/outfile'${count}''
 echo '================================================================'
-./pipex infile "cat" "trzero a b" "output/outfile${count}"
+echo "<"; ./pipex infile "cat" "trzero a b" "output/outfile${count}"
 exit=$?
-echo "exit code" $exit
-< infile cat | trzero a b > "output/outfile${count}-orig"
+echo
+echo ">"; < infile cat | trzero a b > "output/outfile${count}-orig"
 exit_orig=$?
-echo "exit code" $exit_orig
 echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
     echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+	echo "<" $exit
+	echo ">" $exit_orig
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -271,19 +284,21 @@ sleep 1
 echo
 count=$((count+1))
 echo '================================================================'
-echo '                Test' $count ">> Both invalid commands"
+echo '               Test' $count ">> Both invalid commands"
+echo '       ./pipex infile "ls-l" "grepzao x" output/outfile'${count}' '
 echo '================================================================'
-./pipex infile "ls-l" "grepzao x" "output/outfile${count}"
+echo "<"; ./pipex infile "ls-l" "grepzao x" "output/outfile${count}"
 exit=$?
-echo "exit code" $exit
-< infile ls-l | grepzao x > "output/outfile${count}-orig"
+echo
+echo ">"; < infile ls-l | grepzao x > "output/outfile${count}-orig"
 exit_orig=$?
-echo "exit code" $exit_orig
 echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
     echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+	echo "<" $exit
+	echo ">" $exit_orig
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -310,13 +325,13 @@ echo
 count=$((count+1))
 echo '================================================================'
 echo '                Test' $count ">> Valid commands"
+echo '     ./pipex infile "grep d" "cat -e" output/outfile'${count}''
 echo '================================================================'
-./pipex infile "grep d" "cat -e" "output/outfile${count}"
+echo "<"; ./pipex infile "grep d" "cat -e" "output/outfile${count}"
 exit=$?
-echo "exit code" $exit
-< infile grep d | cat -e > "output/outfile${count}-orig"
+echo
+echo ">"; < infile grep d | cat -e > "output/outfile${count}-orig"
 exit_orig=$?
-echo "exit code" $exit_orig
 echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
@@ -348,18 +363,20 @@ echo
 count=$((count+1))
 echo '================================================================'
 echo '                Test' $count ">> Valid commands"
+echo './pipex /dev/urandom "head -n 10" "wc -l" output/outfile'${count}''
 echo '================================================================'
-./pipex /dev/urandom "head -n 10" "wc -l" "output/outfile${count}"
+echo "<"; ./pipex /dev/urandom "head -n 10" "wc -l" "output/outfile${count}"
 exit=$?
-echo "exit code" $exit
-<  /dev/urandom head -n 10 | wc -l  > "output/outfile${count}-orig"
+echo
+echo ">"; <  /dev/urandom head -n 10 | wc -l  > "output/outfile${count}-orig"
 exit_orig=$?
-echo "exit code" $exit_orig
 echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
     echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+	echo "<" $exit
+	echo ">" $exit_orig
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -387,18 +404,20 @@ count=$((count+1))
 echo
 echo '================================================================'
 echo '                Test' $count ">> Valid commands"
+echo '  ./pipex infile "cat" "tr [a-z] [A-Z]" output/outfile'${count}''
 echo '================================================================'
-./pipex infile "cat" "tr [a-z] [A-Z]" "output/outfile${count}"
+echo "<"; ./pipex infile "cat" "tr [a-z] [A-Z]" "output/outfile${count}"
 exit=$?
-echo "exit code" $exit
-< infile cat | tr [a-z] [A-Z] > "output/outfile${count}-orig"
+echo
+echo ">"; < infile cat | tr [a-z] [A-Z] > "output/outfile${count}-orig"
 exit_orig=$?
-echo "exit code" $exit_orig
 echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
     echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+	echo "<" $exit
+	echo ">" $exit_orig
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
@@ -425,18 +444,20 @@ echo
 count=$((count+1))
 echo '================================================================'
 echo '                Test' $count ">> Valid commands"
+echo ' ./pipex infile "grep pipex" "tr x '\' \''" output/outfile'${count}''
 echo '================================================================'
-./pipex infile "grep pipex" "tr x ' '" "output/outfile${count}"
+echo "<"; ./pipex infile "grep pipex" "tr x ' '" "output/outfile${count}"
 exit=$?
-echo "exit code" $exit
-<  infile grep pipex | tr x ' ' > "output/outfile${count}-orig"
+echo
+echo ">"; <  infile grep pipex | tr x ' ' > "output/outfile${count}-orig"
 exit_orig=$?
-echo "exit code" $exit_orig
 echo
 if [[ $exit = $exit_orig ]]; then
     echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
 else
     echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+	echo "<" $exit
+	echo ">" $exit_orig
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
