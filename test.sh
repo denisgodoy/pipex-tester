@@ -3,6 +3,8 @@ $(count=0)
 $(rm -rf output)
 $(mkdir output)
 $(ls -la > infile)
+$(valgrind >/dev/null 2>&1)
+val=$?
 
 echo '================================================================'
 echo '                     Norminette check'
@@ -10,9 +12,9 @@ echo '================================================================'
 norminette ../ | grep "Error"
 ret=$?
 if [[ $ret -eq 1 ]]; then
-	echo "norme $(tput setaf 2)[OK]$(tput sgr 0)"
+	echo "$(tput setaf 2)[OK]$(tput sgr 0)"
 else
-	echo "norme $(tput setaf 1)[KO]$(tput sgr 0)"
+	echo "$(tput setaf 1)[KO]$(tput sgr 0)"
 fi
 echo
 sleep 1
@@ -23,11 +25,11 @@ echo '             Test' $count ">> Check the executable"
 echo '                Executable name is pipex'
 echo '================================================================'
 if [ ! -f "pipex" ]; then
-	echo "$(tput setaf 1)executable [KO]$(tput sgr 0)"
+	echo "$(tput setaf 1)[KO]$(tput sgr 0)"
 	echo
 	exit 0
 else
-	echo "$(tput setaf 2)executable [OK]$(tput sgr 0)"
+	echo "$(tput setaf 2)[OK]$(tput sgr 0)"
 fi
 sleep 1
 
@@ -38,17 +40,15 @@ echo '        Test' $count ">> Invalid number of arguments"
 echo '                    ./pipex infile'
 echo '================================================================'
 echo "<"; ./pipex infile
-valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile >/dev/null 2>&1
-echo
-if [ ! -f "output/valgrind${count}" ]; then
-    echo "Valgrind not found!"
-else
+if [ ! $val ]; then
+	echo
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -62,20 +62,18 @@ echo '================================================================'
 echo "<"; ./pipex infile "cat -e" "grep $" "wc -l" "output/outfile${count}"
 echo
 if [ ! -f "output/outfile${count}" ]; then
-    echo "$(tput setaf 2)check [OK]$(tput sgr 0)"
+    echo "$(tput setaf 2)[OK]$(tput sgr 0)"
 else
-	echo "$(tput setaf 1)check [KO]$(tput sgr 0) - Compile bonus separately!"
+	echo "$(tput setaf 1)[KO]$(tput sgr 0) - Compile bonus separately!"
 fi
-valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat -e" "grep $" "wc -l" output/valgrind >/dev/null 2>&1
-if [ ! -f "output/valgrind${count}" ]; then
-    echo "Valgrind not found!"
-else
+if [ ! $val ]; then
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat -e" "grep $" "wc -l" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -93,29 +91,27 @@ echo ">"; < file1 cat | grep x > "output/outfile${count}-orig"
 exit_orig=$?
 echo
 if [[ $exit = $exit_orig ]]; then
-    echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
+    echo "exit code $(tput setaf 2)[OK]$(tput sgr 0)"
 else
 	echo "<" $exit
 	echo ">" $exit_orig
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+    echo "exit code $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
 if [[ $ret -eq 0 ]]; then
-    echo "$(tput setaf 2)diff [OK]$(tput sgr 0)"
+    echo "diff $(tput setaf 2)[OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)diff [KO]$(tput sgr 0)"
+    echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex file1 "cat" "grep x" output/valgrind >/dev/null 2>&1
-if [ ! -f "output/valgrind${count}" ]; then
-    echo "Valgrind not found!"
-else
+if [ ! $val ]; then
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex file1 "cat" "grep x" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -134,32 +130,31 @@ echo ">"; < infile cat | cat -e > "output/outfile${count}-orig"
 exit_orig=$?
 echo
 if [[ $exit = $exit_orig ]]; then
-    echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
+    echo "exit code $(tput setaf 2)[OK]$(tput sgr 0)"
 else
 	echo "<" $exit
 	echo ">" $exit_orig
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+    echo "exit code $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
 if [[ $ret -eq 0 ]]; then
-    echo "$(tput setaf 2)diff [OK]$(tput sgr 0)"
+    echo "diff $(tput setaf 2)[OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)diff [KO]$(tput sgr 0)"
+    echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat" "cat -e" output/valgrind >/dev/null 2>&1
-chmod 777 infile
-if [ ! -f "output/valgrind${count}" ]; then
-    echo "Valgrind not found!"
-else
+if [ ! $val ]; then
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat" "cat -e" output/valgrind >/dev/null 2>&1
+	chmod 777 infile
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
 	fi
 fi
+chmod 777 infile
 sleep 1
 
 echo
@@ -181,32 +176,30 @@ chmod 777 "output/outfile${count}"
 chmod 777 "output/outfile${count}-orig"
 echo
 if [[ $exit = $exit_orig ]]; then
-    echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
+    echo "exit code $(tput setaf 2)[OK]$(tput sgr 0)"
 else
 	echo "<" $exit
 	echo ">" $exit_orig
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+    echo "exit code $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
 if [[ $ret -eq 0 ]]; then
-    echo "$(tput setaf 2)diff [OK]$(tput sgr 0)"
+    echo "diff $(tput setaf 2)[OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)diff [KO]$(tput sgr 0)"
+    echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
 if [ -f "output/valgrind" ]; then
 	chmod 000 "output/valgrind"
 fi
-valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "grep pipex" "wc -lw" output/valgrind >/dev/null 2>&1
-if [ ! -f "output/valgrind${count}" ]; then
-    echo "Valgrind not found!"
-else
+if [ ! $val ]; then
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "grep pipex" "wc -lw" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
 	fi
 fi
 if [ -f "output/valgrind" ]; then
@@ -227,29 +220,27 @@ echo ">"; < infile catzado | wc -w > "output/outfile${count}-orig"
 exit_orig=$?
 echo
 if [[ $exit = $exit_orig ]]; then
-    echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
+    echo "exit code $(tput setaf 2)[OK]$(tput sgr 0)"
 else
 	echo "<" $exit
 	echo ">" $exit_orig
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+    echo "exit code $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
 if [[ $ret -eq 0 ]]; then
-    echo "$(tput setaf 2)diff [OK]$(tput sgr 0)"
+    echo "diff $(tput setaf 2)[OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)diff [KO]$(tput sgr 0)"
+    echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "catzado" "wc -w" output/valgrind >/dev/null 2>&1
-if [ ! -f "output/valgrind${count}" ]; then
-    echo "Valgrind not found!"
-else
+if [ ! $val ]; then
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "catzado" "wc -w" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -267,29 +258,27 @@ echo ">"; < infile cat | trzero a b > "output/outfile${count}-orig"
 exit_orig=$?
 echo
 if [[ $exit = $exit_orig ]]; then
-    echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
+    echo "exit code $(tput setaf 2)[OK]$(tput sgr 0)"
 else
 	echo "<" $exit
 	echo ">" $exit_orig
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+    echo "exit code $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
 if [[ $ret -eq 0 ]]; then
-    echo "$(tput setaf 2)diff [OK]$(tput sgr 0)"
+    echo "diff $(tput setaf 2)[OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)diff [KO]$(tput sgr 0)"
+    echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat" "trzero a b" output/valgrind >/dev/null 2>&1
-if [ ! -f "output/valgrind${count}" ]; then
-    echo "Valgrind not found!"
-else
+if [ ! $val ]; then
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat" "trzero a b" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -307,29 +296,27 @@ echo ">"; < infile ls-l | grepzao x > "output/outfile${count}-orig"
 exit_orig=$?
 echo
 if [[ $exit = $exit_orig ]]; then
-    echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
+    echo "exit code $(tput setaf 2)[OK]$(tput sgr 0)"
 else
 	echo "<" $exit
 	echo ">" $exit_orig
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+    echo "exit code $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
 if [[ $ret -eq 0 ]]; then
-    echo "$(tput setaf 2)diff [OK]$(tput sgr 0)"
+    echo "diff $(tput setaf 2)[OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)diff [KO]$(tput sgr 0)"
+    echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "ls-l" "grepzao x" output/valgrind >/dev/null 2>&1
-if [ ! -f "output/valgrind${count}" ]; then
-    echo "Valgrind not found!"
-else
+if [ ! $val ]; then
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "ls-l" "grepzao x" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -347,27 +334,25 @@ echo ">"; < infile grep d | cat -e > "output/outfile${count}-orig"
 exit_orig=$?
 echo
 if [[ $exit = $exit_orig ]]; then
-    echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
+    echo "exit code $(tput setaf 2)[OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+    echo "exit code $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
 if [[ $ret -eq 0 ]]; then
-    echo "$(tput setaf 2)diff [OK]$(tput sgr 0)"
+    echo "diff $(tput setaf 2)[OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)diff [KO]$(tput sgr 0)"
+    echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "grep d" "cat -e" output/valgrind >/dev/null 2>&1
-if [ ! -f "output/valgrind${count}" ]; then
-    echo "Valgrind not found!"
-else
+if [ ! $val ]; then
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "grep d" "cat -e" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -385,36 +370,33 @@ echo ">"; <  /dev/urandom head -n 10 | wc -l  > "output/outfile${count}-orig"
 exit_orig=$?
 echo
 if [[ $exit = $exit_orig ]]; then
-    echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
+    echo "exit code $(tput setaf 2)[OK]$(tput sgr 0)"
 else
 	echo "<" $exit
 	echo ">" $exit_orig
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+    echo "exit code $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
 if [[ $ret -eq 0 ]]; then
-    echo "$(tput setaf 2)diff [OK]$(tput sgr 0)"
+    echo "diff $(tput setaf 2)[OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)diff [KO]$(tput sgr 0)"
+    echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex /dev/urandom "head -n 10" "wc -l" output/valgrind >/dev/null 2>&1
-if [ ! -f "output/valgrind${count}" ]; then
-    echo "Valgrind not found!"
-else
+if [ ! $val ]; then
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex /dev/urandom "head -n 10" "wc -l" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
 
 echo
 count=$((count+1))
-echo
 echo '================================================================'
 echo '                Test' $count ">> Valid commands"
 echo '  ./pipex infile "cat" "tr [a-z] [A-Z]" output/outfile'${count}''
@@ -426,29 +408,27 @@ echo ">"; < infile cat | tr [a-z] [A-Z] > "output/outfile${count}-orig"
 exit_orig=$?
 echo
 if [[ $exit = $exit_orig ]]; then
-    echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
+    echo "exit code $(tput setaf 2)[OK]$(tput sgr 0)"
 else
 	echo "<" $exit
 	echo ">" $exit_orig
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+    echo "exit code $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
 if [[ $ret -eq 0 ]]; then
-    echo "$(tput setaf 2)diff [OK]$(tput sgr 0)"
+    echo "diff $(tput setaf 2)[OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)diff [KO]$(tput sgr 0)"
+    echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat" "tr [a-z] [A-Z]" output/valgrind >/dev/null 2>&1
-if [ ! -f "output/valgrind${count}" ]; then
-    echo "Valgrind not found!"
-else
+if [ ! $val ]; then
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat" "tr [a-z] [A-Z]" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
 	fi
 fi
 sleep 1
@@ -466,29 +446,27 @@ echo ">"; <  infile grep pipex | tr x ' ' > "output/outfile${count}-orig"
 exit_orig=$?
 echo
 if [[ $exit = $exit_orig ]]; then
-    echo "$(tput setaf 2)exit code [OK]$(tput sgr 0)"
+    echo "exit code $(tput setaf 2)[OK]$(tput sgr 0)"
 else
 	echo "<" $exit
 	echo ">" $exit_orig
-    echo "$(tput setaf 1)exit code [KO]$(tput sgr 0)"
+    echo "exit code $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
 diff "output/outfile${count}" "output/outfile${count}-orig"
 ret=$?
 if [[ $ret -eq 0 ]]; then
-    echo "$(tput setaf 2)diff [OK]$(tput sgr 0)"
+    echo "diff $(tput setaf 2)[OK]$(tput sgr 0)"
 else
-    echo "$(tput setaf 1)diff [KO]$(tput sgr 0)"
+    echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat" "tr - ' '" output/valgrind >/dev/null 2>&1
-if [ ! -f "output/valgrind${count}" ]; then
-    echo "Valgrind not found!"
-else
+if [ ! $val ]; then
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat" "tr - ' '" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
-    	echo "$(tput setaf 2)leaks [OK]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
 	else
-    	echo "$(tput setaf 1)leaks [KO]$(tput sgr 0)"
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
 	fi
 fi
 echo
