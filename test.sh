@@ -15,6 +15,8 @@ else
 	echo "norme $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
 echo
+sleep 1
+
 count=$((count+1))
 echo '================================================================'
 echo '             Test' $count ">> Check the executable"
