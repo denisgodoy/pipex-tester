@@ -4,6 +4,17 @@ $(rm -rf output)
 $(mkdir output)
 $(ls -la > infile)
 
+echo '================================================================'
+echo '                     Norminette check'
+echo '================================================================'
+norminette ../ | grep "Error"
+ret=$?
+if [[ $ret -eq 1 ]]; then
+	echo "norme $(tput setaf 2)[OK]$(tput sgr 0)"
+else
+	echo "norme $(tput setaf 1)[KO]$(tput sgr 0)"
+fi
+echo
 count=$((count+1))
 echo '================================================================'
 echo '             Test' $count ">> Check the executable"
