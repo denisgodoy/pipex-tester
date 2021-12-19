@@ -40,7 +40,7 @@ echo '        Test' $count ">> Invalid number of arguments"
 echo '                    ./pipex infile'
 echo '================================================================'
 echo "<"; ./pipex infile
-if [ ! $val ]; then
+if [[ $val != 127 ]]; then
 	echo
 	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
@@ -66,7 +66,7 @@ if [ ! -f "output/outfile${count}" ]; then
 else
 	echo "$(tput setaf 1)[KO]$(tput sgr 0) - Compile bonus separately!"
 fi
-if [ ! $val ]; then
+if [[ $val != 127 ]]; then
 	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat -e" "grep $" "wc -l" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
@@ -104,7 +104,7 @@ if [[ $ret -eq 0 ]]; then
 else
     echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-if [ ! $val ]; then
+if [[ $val != 127 ]]; then
 	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex file1 "cat" "grep x" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
@@ -143,7 +143,7 @@ if [[ $ret -eq 0 ]]; then
 else
     echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-if [ ! $val ]; then
+if [[ $val != 127 ]]; then
 	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat" "cat -e" output/valgrind >/dev/null 2>&1
 	chmod 777 infile
 	< output/valgrind${count} grep "still reachable"
@@ -192,7 +192,7 @@ fi
 if [ -f "output/valgrind" ]; then
 	chmod 000 "output/valgrind"
 fi
-if [ ! $val ]; then
+if [[ $val != 127 ]]; then
 	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "grep pipex" "wc -lw" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
@@ -233,7 +233,7 @@ if [[ $ret -eq 0 ]]; then
 else
     echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-if [ ! $val ]; then
+if [[ $val != 127 ]]; then
 	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "catzado" "wc -w" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
@@ -271,7 +271,7 @@ if [[ $ret -eq 0 ]]; then
 else
     echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-if [ ! $val ]; then
+if [[ $val != 127 ]]; then
 	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat" "trzero a b" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
@@ -309,7 +309,7 @@ if [[ $ret -eq 0 ]]; then
 else
     echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-if [ ! $val ]; then
+if [[ $val != 127 ]]; then
 	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "ls-l" "grepzao x" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
@@ -345,7 +345,7 @@ if [[ $ret -eq 0 ]]; then
 else
     echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-if [ ! $val ]; then
+if [[ $val != 127 ]]; then
 	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "grep d" "cat -e" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
@@ -383,7 +383,7 @@ if [[ $ret -eq 0 ]]; then
 else
     echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-if [ ! $val ]; then
+if [[ $val != 127 ]]; then
 	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex /dev/urandom "head -n 10" "wc -l" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
@@ -421,7 +421,7 @@ if [[ $ret -eq 0 ]]; then
 else
     echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-if [ ! $val ]; then
+if [[ $val != 127 ]]; then
 	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat" "tr [a-z] [A-Z]" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
@@ -459,7 +459,7 @@ if [[ $ret -eq 0 ]]; then
 else
     echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-if [ ! $val ]; then
+if [[ $val != 127 ]]; then
 	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat" "tr - ' '" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
