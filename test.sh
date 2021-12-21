@@ -6,18 +6,18 @@ $(ls -la > infile)
 $(valgrind >/dev/null 2>&1)
 val=$?
 
-echo '================================================================'
-echo '                     Norminette check'
-echo '================================================================'
-norminette ../ | grep "Error"
-ret=$?
-if [[ $ret -eq 1 ]]; then
-	echo "$(tput setaf 2)[OK]$(tput sgr 0)"
-else
-	echo "$(tput setaf 1)[KO]$(tput sgr 0)"
-fi
-echo
-sleep 1
+# echo '================================================================'
+# echo '                     Norminette check'
+# echo '================================================================'
+# norminette ../ | grep "Error"
+# ret=$?
+# if [[ $ret -eq 1 ]]; then
+# 	echo "$(tput setaf 2)[OK]$(tput sgr 0)"
+# else
+# 	echo "$(tput setaf 1)[KO]$(tput sgr 0)"
+# fi
+# echo
+# sleep 1
 
 count=$((count+1))
 echo '================================================================'
@@ -155,56 +155,6 @@ if [[ $val != 127 ]]; then
 	fi
 fi
 chmod 777 infile
-sleep 1
-
-echo
-count=$((count+1))
-echo '================================================================'
-echo '              Test' $count ">> Outfile bad permission"
-echo '    ./pipex infile "grep pipex" "wc -lw" output/outfile'${count}''
-echo '================================================================'
-touch "output/outfile${count}"
-chmod 000 "output/outfile${count}"
-echo "<"; ./pipex infile "grep pipex" "wc -lw" "output/outfile${count}"
-exit=$?
-echo
-touch "output/outfile${count}-orig"
-chmod 000 "output/outfile${count}-orig"
-echo ">"; < infile grep pipex | wc -lw > "output/outfile${count}-orig"
-exit_orig=$?
-chmod 777 "output/outfile${count}"
-chmod 777 "output/outfile${count}-orig"
-echo
-if [[ $exit = $exit_orig ]]; then
-    echo "exit code $(tput setaf 2)[OK]$(tput sgr 0)"
-else
-	echo "<" $exit
-	echo ">" $exit_orig
-    echo "exit code $(tput setaf 1)[KO]$(tput sgr 0)"
-fi
-diff "output/outfile${count}" "output/outfile${count}-orig"
-ret=$?
-if [[ $ret -eq 0 ]]; then
-    echo "diff $(tput setaf 2)[OK]$(tput sgr 0)"
-else
-    echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
-fi
-if [ -f "output/valgrind" ]; then
-	chmod 000 "output/valgrind"
-fi
-if [[ $val != 127 ]]; then
-	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "grep pipex" "wc -lw" output/valgrind >/dev/null 2>&1
-	< output/valgrind${count} grep "still reachable"
-	ret=$?
-	if [[ $ret -eq 1 ]]; then
-    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
-	else
-    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
-	fi
-fi
-if [ -f "output/valgrind" ]; then
-	chmod 777 "output/valgrind"
-fi
 sleep 1
 
 echo
@@ -434,6 +384,62 @@ fi
 sleep 1
 
 echo
+echo '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+echo '                   >>>>>> Extra Tests <<<<<<'
+echo '             Kudos if you handled these situations'
+echo '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+
+echo
+count=$((count+1))
+echo '================================================================'
+echo '              Test' $count ">> Outfile bad permission"
+echo '    ./pipex infile "grep pipex" "wc -lw" output/outfile'${count}''
+echo '================================================================'
+touch "output/outfile${count}"
+chmod 000 "output/outfile${count}"
+echo "<"; ./pipex infile "grep pipex" "wc -lw" "output/outfile${count}"
+exit=$?
+echo
+touch "output/outfile${count}-orig"
+chmod 000 "output/outfile${count}-orig"
+echo ">"; < infile grep pipex | wc -lw > "output/outfile${count}-orig"
+exit_orig=$?
+chmod 777 "output/outfile${count}"
+chmod 777 "output/outfile${count}-orig"
+echo
+if [[ $exit = $exit_orig ]]; then
+    echo "exit code $(tput setaf 2)[OK]$(tput sgr 0)"
+else
+	echo "<" $exit
+	echo ">" $exit_orig
+    echo "exit code $(tput setaf 1)[KO]$(tput sgr 0)"
+fi
+diff "output/outfile${count}" "output/outfile${count}-orig"
+ret=$?
+if [[ $ret -eq 0 ]]; then
+    echo "diff $(tput setaf 2)[OK]$(tput sgr 0)"
+else
+    echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
+fi
+if [ -f "output/valgrind" ]; then
+	chmod 000 "output/valgrind"
+fi
+if [[ $val != 127 ]]; then
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "grep pipex" "wc -lw" output/valgrind >/dev/null 2>&1
+	< output/valgrind${count} grep "still reachable"
+	ret=$?
+	if [[ $ret -eq 1 ]]; then
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
+	else
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
+	fi
+fi
+if [ -f "output/valgrind" ]; then
+	chmod 777 "output/valgrind"
+fi
+sleep 1
+
+echo
 count=$((count+1))
 echo '================================================================'
 echo '                Test' $count ">> Valid commands"
@@ -460,7 +466,83 @@ else
     echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
 fi
 if [[ $val != 127 ]]; then
-	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "cat" "tr - ' '" output/valgrind >/dev/null 2>&1
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "grep pipex" "tr x ' '" output/valgrind >/dev/null 2>&1
+	< output/valgrind${count} grep "still reachable"
+	ret=$?
+	if [[ $ret -eq 1 ]]; then
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
+	else
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
+	fi
+fi
+sleep 1
+
+echo
+count=$((count+1))
+echo '================================================================'
+echo '                Test' $count ">> Valid commands"
+echo " ./pipex infile \"echo 'Hi 42'\" \"tr 42 FT\" output/outfile${count}"
+echo '================================================================'
+echo "<"; ./pipex infile "echo 'Hi 42'" "tr 42 FT" "output/outfile${count}"
+exit=$?
+echo
+echo ">"; <  infile echo 'Hi 42' | tr 42 FT > "output/outfile${count}-orig"
+exit_orig=$?
+echo
+if [[ $exit = $exit_orig ]]; then
+    echo "exit code $(tput setaf 2)[OK]$(tput sgr 0)"
+else
+	echo "<" $exit
+	echo ">" $exit_orig
+    echo "exit code $(tput setaf 1)[KO]$(tput sgr 0)"
+fi
+diff "output/outfile${count}" "output/outfile${count}-orig"
+ret=$?
+if [[ $ret -eq 0 ]]; then
+    echo "diff $(tput setaf 2)[OK]$(tput sgr 0)"
+else
+    echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
+fi
+if [[ $val != 127 ]]; then
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "echo 'Hi 42'" "tr 42 FT" output/valgrind >/dev/null 2>&1
+	< output/valgrind${count} grep "still reachable"
+	ret=$?
+	if [[ $ret -eq 1 ]]; then
+    	echo "leaks $(tput setaf 2)[OK]$(tput sgr 0)"
+	else
+    	echo "leaks $(tput setaf 1)[KO]$(tput sgr 0)"
+	fi
+fi
+sleep 1
+
+echo
+count=$((count+1))
+echo '================================================================'
+echo '                Test' $count ">> Valid commands"
+echo " ./pipex infile \"tr ex ' X'\" \"tr pi 'P '\" output/outfile${count}"
+echo '================================================================'
+echo "<"; ./pipex infile "tr ex ' X'" "tr pi 'P '" "output/outfile${count}"
+exit=$?
+echo
+echo ">"; <  infile tr ex ' X' | tr pi 'P ' > "output/outfile${count}-orig"
+exit_orig=$?
+echo
+if [[ $exit = $exit_orig ]]; then
+    echo "exit code $(tput setaf 2)[OK]$(tput sgr 0)"
+else
+	echo "<" $exit
+	echo ">" $exit_orig
+    echo "exit code $(tput setaf 1)[KO]$(tput sgr 0)"
+fi
+diff "output/outfile${count}" "output/outfile${count}-orig"
+ret=$?
+if [[ $ret -eq 0 ]]; then
+    echo "diff $(tput setaf 2)[OK]$(tput sgr 0)"
+else
+    echo "diff $(tput setaf 1)[KO]$(tput sgr 0)"
+fi
+if [[ $val != 127 ]]; then
+	valgrind --leak-check=full --log-file="output/valgrind${count}" ./pipex infile "tr ex ' X'" "tr pi 'P '" output/valgrind >/dev/null 2>&1
 	< output/valgrind${count} grep "still reachable"
 	ret=$?
 	if [[ $ret -eq 1 ]]; then
