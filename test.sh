@@ -41,6 +41,7 @@ else
 	done
 	unlink diff
 	echo "$(tput setaf 1)[KO]$(tput sgr 0)"
+	exit 0
 fi
 sleep 1
 
