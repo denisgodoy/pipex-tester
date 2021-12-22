@@ -6,17 +6,17 @@ $(ls -la > infile)
 $(valgrind >/dev/null 2>&1)
 val=$?
 
-# echo '================================================================'
-# echo '                     Norminette check'
-# echo '================================================================'
-# norminette ../ | grep "Error"
-# ret=$?
-# if [[ $ret -eq 1 ]]; then
-# 	echo "$(tput setaf 2)[OK]$(tput sgr 0)"
-# else
-# 	echo "$(tput setaf 1)[KO]$(tput sgr 0)"
-# fi
-# sleep 1
+echo '================================================================'
+echo '                     Norminette check'
+echo '================================================================'
+norminette ../ | grep "Error"
+ret=$?
+if [[ $ret -eq 1 ]]; then
+	echo "$(tput setaf 2)[OK]$(tput sgr 0)"
+else
+	echo "$(tput setaf 1)[KO]$(tput sgr 0)"
+fi
+sleep 1
 
 echo
 count=$((count+1))
