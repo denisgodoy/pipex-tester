@@ -16,9 +16,35 @@ if [[ $ret -eq 1 ]]; then
 else
 	echo "$(tput setaf 1)[KO]$(tput sgr 0)"
 fi
-echo
 sleep 1
 
+echo
+count=$((count+1))
+echo '================================================================'
+echo '          Test '$count' >> Forbidden function check'
+echo '================================================================'
+nm -un pipex | grep -v __ > fn_used
+cat fn_used | while read fn
+do
+   < fn_allowed grep $fn >> check
+done
+diff check fn_used > diff
+ret=$?
+unlink check
+if [[ $ret -eq 0 ]]; then
+	echo "$(tput setaf 2)[OK]$(tput sgr 0)"
+	unlink diff
+else
+	cat diff | grep '>' | cut -c4- | while read fn
+	do
+   		echo "> $fn"
+	done
+	unlink diff
+	echo "$(tput setaf 1)[KO]$(tput sgr 0)"
+fi
+sleep 1
+
+echo
 count=$((count+1))
 echo '================================================================'
 echo '             Test' $count ">> Check the executable"

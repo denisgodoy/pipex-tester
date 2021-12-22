@@ -7,7 +7,7 @@ all:
 
 clean:
 	$(RM) -r output/
-	$(RM) infile
+	$(RM) infile fn_used
 
 fclean: clean
 	$(RM) pipex
