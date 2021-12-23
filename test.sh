@@ -39,9 +39,9 @@ if [[ $ret -eq 0 ]]; then
 	echo "$(tput setaf 2)[OK]$(tput sgr 0)"
 	unlink diff
 else
-	cat diff | grep '>' | cut -c4- | while read fn
+	cat diff | grep '>' | cut -c3- | while read fn
 	do
-   		echo "> $fn"
+   		echo $fn
 	done
 	unlink diff
 	echo "$(tput setaf 1)[KO]$(tput sgr 0)"
