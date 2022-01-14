@@ -24,7 +24,7 @@ echo '================================================================'
 echo '          Test '$count' >> Forbidden function check'
 echo '================================================================'
 if [[ $(uname) = "Linux" ]]; then
-	nm -un pipex | grep -v w | grep -v __ | cut -c20- | rev | cut -c14- | rev > fn_used
+	nm -un pipex | grep -v w | grep -v __ | rev | cut -d "@" -f3-  | rev | cut -c20- > fn_used
 else
 	nm -un pipex | grep -v __ | cut -c2- > fn_used
 fi
@@ -45,7 +45,6 @@ else
 	done
 	unlink diff
 	echo "$(tput setaf 1)[KO]$(tput sgr 0)"
-	exit 0
 fi
 sleep 1
 
